@@ -1,0 +1,6 @@
+{
+  "name": "Licencias Internas de Conducir",
+  "description": "Aplicación para el llenado, previsualización y exportación a PDF de Licencias Internas de Conducir en formato estándar CR80.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
