@@ -21,7 +21,8 @@ import {
   Wrench, 
   RotateCcw,
   Sparkles,
-  HelpCircle
+  HelpCircle,
+  QrCode
 } from 'lucide-react';
 import { 
   LicenseData, 
@@ -698,6 +699,36 @@ export default function App() {
                   </div>
                 )}
               </div>
+            </div>
+          </section>
+
+          {/* Section: Link Centro Documental (QR del Reverso) */}
+          <section className="bg-white border border-slate-200 rounded-xl p-5 shadow-xs mb-4">
+            <div className="flex items-center gap-2 border-b border-slate-100 pb-3 mb-4">
+              <QrCode className="w-4 h-4 text-[#003366]" />
+              <h2 className="text-xs font-bold tracking-wider uppercase text-slate-700">
+                Link Centro Documental CMP (QR del Reverso)
+              </h2>
+            </div>
+            <p className="text-[10px] text-slate-400 font-bold mb-3 uppercase tracking-wide leading-normal">
+              Pegue el enlace interno del Centro Documental CMP. Se generará un QR escaneable junto al reverso de la licencia que abrirá este enlace (requiere estar conectado a la red CMP).
+            </p>
+            <div className="flex flex-col gap-1.5">
+              <label className="text-[10px] font-bold text-slate-600 uppercase tracking-wider">
+                URL del Centro Documental
+              </label>
+              <input
+                type="url"
+                placeholder="http://centro-documental.cmp.local/..."
+                value={data.linkCentroDocumental}
+                onChange={(e) => handleTextChange('linkCentroDocumental', e.target.value)}
+                className="bg-slate-50 border border-slate-200 rounded px-3 py-2 text-xs font-mono text-slate-800 placeholder:text-slate-400 focus:outline-hidden focus:border-blue-500 focus:bg-white transition-all"
+              />
+              {data.linkCentroDocumental && !/^https?:\/\//i.test(data.linkCentroDocumental.trim()) && (
+                <p className="text-[10px] font-bold text-amber-600">
+                  El enlace debería comenzar con http:// o https:// para que el celular lo abra como link.
+                </p>
+              )}
             </div>
           </section>
 

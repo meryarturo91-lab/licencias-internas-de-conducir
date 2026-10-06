@@ -67,6 +67,7 @@ export interface LicenseData {
   logoCmpUrl: string;
   logoGrpUrl: string;
   logoWatermarkUrl: string;
+  linkCentroDocumental: string;
 }
 
 export const INITIAL_LICENSE_DATA: LicenseData = {
@@ -125,6 +126,7 @@ export const INITIAL_LICENSE_DATA: LicenseData = {
   logoCmpUrl: 'https://drive.google.com/file/d/1a1LBVqQ5R58mCHRU4x6EWcKuA2JvXK0O/view?usp=sharing',
   logoGrpUrl: 'https://drive.google.com/file/d/1sUNCKNbtxCel0kDjYA8QedXc3jD4Ze3R/view?usp=drive_link',
   logoWatermarkUrl: 'https://drive.google.com/file/d/1a1LBVqQ5R58mCHRU4x6EWcKuA2JvXK0O/view?usp=drive_link',
+  linkCentroDocumental: '',
 };
 
 export const DEMO_LICENSE_DATA: LicenseData = {
@@ -183,4 +185,5 @@ export const DEMO_LICENSE_DATA: LicenseData = {
   logoCmpUrl: 'https://drive.google.com/file/d/1a1LBVqQ5R58mCHRU4x6EWcKuA2JvXK0O/view?usp=sharing',
   logoGrpUrl: 'https://drive.google.com/file/d/1sUNCKNbtxCel0kDjYA8QedXc3jD4Ze3R/view?usp=drive_link',
   logoWatermarkUrl: 'https://drive.google.com/file/d/1a1LBVqQ5R58mCHRU4x6EWcKuA2JvXK0O/view?usp=drive_link',
+  linkCentroDocumental: 'http://centro-documental.cmp.local/licencias',
 };

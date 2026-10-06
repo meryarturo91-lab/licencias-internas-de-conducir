@@ -22,6 +22,7 @@ export const CardBack: React.FC<CardBackProps> = ({ data, id }) => {
     equiposOtros,
     equiposOtrosTexto,
     logoWatermarkUrl,
+    linkCentroDocumental,
   } = data;
 
   const equipmentList: { key: keyof typeof equiposAutorizados; label: string }[] = [
@@ -48,12 +49,7 @@ export const CardBack: React.FC<CardBackProps> = ({ data, id }) => {
     { key: 'motoniveladora', label: 'Motoniveladora' },
   ];
 
-  const qrValue = `LICENCIA INTERNA CMP - RUT: ${rut || 'N/A'} - NOMBRE: ${nombreCompleto || 'N/A'} - EQUIPOS: ${
-    equipmentList
-      .filter((eq) => equiposAutorizados[eq.key])
-      .map((eq) => eq.label)
-      .join(', ')
-  }${equiposOtros && equiposOtrosTexto ? `, Otros (${equiposOtrosTexto})` : ''}`;
+  const qrValue = linkCentroDocumental.trim();
 
   const col1 = equipmentList.slice(0, 6);
   const col2 = equipmentList.slice(6, 11);
@@ -173,10 +169,19 @@ export const CardBack: React.FC<CardBackProps> = ({ data, id }) => {
             className="border border-slate-300 bg-white shadow-xs rounded-sm"
             style={{ width: '72px', height: '72px', overflow: 'hidden', padding: '3px', boxSizing: 'border-box' }}
           >
-            <QRCodeSVG value={qrValue} size={64} />
+            {qrValue ? (
+              <QRCodeSVG value={qrValue} size={64} />
+            ) : (
+              <div
+                className="flex items-center justify-center border border-dashed border-slate-300 text-center text-[6px] font-bold text-slate-400 uppercase"
+                style={{ width: '64px', height: '64px' }}
+              >
+                Sin link
+              </div>
+            )}
           </div>
           <span className="text-[6.5px] font-black text-slate-500 tracking-tighter uppercase" style={{ display: 'block', lineHeight: '10px', marginTop: '3px', textAlign: 'center' }}>
-            VALIDACIÓN QR
+            CENTRO DOCUMENTAL
           </span>
         </div>
 

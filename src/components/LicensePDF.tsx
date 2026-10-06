@@ -22,6 +22,7 @@ import {
   Rect,
 } from '@react-pdf/renderer';
 import { LicenseData } from '../types';
+import { buildQrPath } from '../utils/qrMatrix';
 import { getEmbeddableUrl } from '../utils/driveHelper';
 import { logoCmpDataUrl, logoGrpDataUrl, logoCmpWatermarkDataUrl } from '../assets/logoData';
 
@@ -69,88 +70,15 @@ function formatDate(s: string): string {
   return `${d}/${m}/${y}`;
 }
 
-/**
- * Deterministic pseudo-QR grid (25×25) seeded from a string.
- * Uses finder patterns, timing strips, and alignment block per QR spec shape,
- * with PRNG-seeded data modules so the code is content-specific.
- */
-function computeQRGrid(value: string): boolean[][] {
-  const N = 25;
-  let hash = 0;
-  for (let i = 0; i < value.length; i++) {
-    hash = ((hash << 5) - hash + value.charCodeAt(i)) | 0;
-  }
-
-  const g: boolean[][] = Array.from({ length: N }, () => Array(N).fill(false));
-
-  // Finder pattern (7×7)
-  const finder = (sx: number, sy: number) => {
-    for (let y = 0; y < 7; y++) {
-      for (let x = 0; x < 7; x++) {
-        if (x === 0 || x === 6 || y === 0 || y === 6 || (x >= 2 && x <= 4 && y >= 2 && y <= 4))
-          g[sy + y][sx + x] = true;
-      }
-    }
-  };
-  finder(0, 0);
-  finder(N - 7, 0);
-  finder(0, N - 7);
-
-  // Alignment pattern (5×5, bottom-right)
-  for (let y = 0; y < 5; y++) {
-    for (let x = 0; x < 5; x++) {
-      if (x === 0 || x === 4 || y === 0 || y === 4 || (x === 2 && y === 2))
-        g[N - 9 + y][N - 9 + x] = true;
-    }
-  }
-
-  // Timing strips
-  for (let i = 8; i < N - 8; i++) {
-    g[6][i] = i % 2 === 0;
-    g[i][6] = i % 2 === 0;
-  }
-
-  // Data modules (PRNG)
-  let seed = Math.abs(hash || 12345);
-  for (let y = 0; y < N; y++) {
-    for (let x = 0; x < N; x++) {
-      const inTL = x < 8 && y < 8;
-      const inTR = x > N - 9 && y < 8;
-      const inBL = x < 8 && y > N - 9;
-      const inAl = x > N - 10 && x < N - 4 && y > N - 10 && y < N - 4;
-      if (!inTL && !inTR && !inBL && !inAl && x !== 6 && y !== 6) {
-        seed = (seed * 1664525 + 1013904223) % 4294967296;
-        g[y][x] = seed % 3 === 0;
-      }
-    }
-  }
-
-  return g;
-}
-
 // ─── Primitive PDF components ─────────────────────────────────────────────────
 
-/** QR code rendered using react-pdf Svg + Rect — proper vector QR in the PDF */
+/** Real scannable QR rendered as a vector path in the PDF */
 const QRCodePDF: React.FC<{ value: string; sizePt: number }> = ({ value, sizePt }) => {
-  const grid = useMemo(() => computeQRGrid(value), [value]);
-  const cell = sizePt / 25;
+  const { d, total } = useMemo(() => buildQrPath(value), [value]);
   return (
-    <Svg width={sizePt} height={sizePt} viewBox={`0 0 ${sizePt} ${sizePt}`}>
-      <Rect x={0} y={0} width={sizePt} height={sizePt} fill="white" />
-      {grid.flatMap((row, y) =>
-        row.map((on, x) =>
-          on ? (
-            <Rect
-              key={`${x}-${y}`}
-              x={x * cell}
-              y={y * cell}
-              width={cell}
-              height={cell}
-              fill="#111827"
-            />
-          ) : null
-        )
-      )}
+    <Svg width={sizePt} height={sizePt} viewBox={`0 0 ${total} ${total}`}>
+      <Rect x={0} y={0} width={total} height={total} fill="white" />
+      <Path d={d} fill="#000000" />
     </Svg>
   );
 };
@@ -631,15 +559,9 @@ const CardFrontPDF: React.FC<{ data: LicenseData }> = ({ data }) => {
 // ─── Card Back ────────────────────────────────────────────────────────────────
 
 const CardBackPDF: React.FC<{ data: LicenseData }> = ({ data }) => {
-  const { nombreCompleto, rut, equiposAutorizados, equiposOtros, equiposOtrosTexto, logoWatermarkUrl } = data;
+  const { equiposAutorizados, equiposOtros, equiposOtrosTexto, logoWatermarkUrl, linkCentroDocumental } = data;
 
-  const qrValue = [
-    `LICENCIA INTERNA CMP`,
-    `RUT: ${rut || 'N/A'}`,
-    `NOMBRE: ${nombreCompleto || 'N/A'}`,
-    `EQUIPOS: ${EQUIP_LIST.filter(e => equiposAutorizados[e.key as EquipKey]).map(e => e.label).join(', ')}`,
-    equiposOtros && equiposOtrosTexto ? `Otros: ${equiposOtrosTexto}` : '',
-  ].filter(Boolean).join(' — ');
+  const qrValue = (linkCentroDocumental || '').trim();
 
   // Split 21 items into 4 columns: 6 / 5 / 5 / 5
   const cols = [
@@ -697,9 +619,13 @@ const CardBackPDF: React.FC<{ data: LicenseData }> = ({ data }) => {
           </View>
           <View style={s.qrCol}>
             <View style={s.qrBox}>
-              <QRCodePDF value={qrValue} sizePt={20 * MM} />
+              {qrValue ? (
+                <QRCodePDF value={qrValue} sizePt={20 * MM} />
+              ) : (
+                <View style={{ width: 20 * MM, height: 20 * MM }} />
+              )}
             </View>
-            <Text style={s.qrLabel}>VALIDACIÓN QR</Text>
+            <Text style={s.qrLabel}>CENTRO DOCUMENTAL</Text>
           </View>
         </View>
 
