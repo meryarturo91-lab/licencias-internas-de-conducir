@@ -22,8 +22,10 @@ import {
   RotateCcw,
   Sparkles,
   HelpCircle,
-  QrCode
+  QrCode,
+  FileUp
 } from 'lucide-react';
+import { embedLicenseData, importLicensePdf } from './utils/pdfImport';
 import { 
   LicenseData, 
   INITIAL_LICENSE_DATA, 
@@ -47,7 +49,10 @@ export default function App() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [notification, setNotification] = useState<{ message: string; type: 'success' | 'info' | 'error' } | null>(null);
 
+  const [isImporting, setIsImporting] = useState(false);
+
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const pdfInputRef = useRef<HTMLInputElement>(null);
 
   // Show status notification
   const triggerNotification = (message: string, type: 'success' | 'info' | 'error' = 'success') => {
@@ -187,9 +192,11 @@ export default function App() {
       const filename = `${data.rut || 'sin_rut'}_licencia_interna`;
 
       // react-pdf renders directly to a Blob — no html2canvas / DOM involved
-      const blob = await pdf(
+      const pdfBlob = await pdf(
         <LicenseDocument data={data} format={pdfFormat} />
       ).toBlob();
+      // Incrusta los datos del formulario para poder volver a cargar este PDF
+      const blob = embedLicenseData(pdfBlob, data);
 
       // Trigger browser download
       const url  = URL.createObjectURL(blob);
@@ -211,6 +218,33 @@ export default function App() {
       );
     } finally {
       setIsGenerating(false);
+    }
+  };
+
+  // ── Cargar un PDF descargado previamente para editarlo ─────────────────────
+  const handlePdfImport = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    e.target.value = '';
+    if (!file) return;
+
+    setIsImporting(true);
+    try {
+      const { data: imported, source } = await importLicensePdf(file, data);
+      setData(imported);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+      triggerNotification(
+        source === 'embedded'
+          ? `PDF cargado: ${imported.nombreCompleto || imported.rut}. Edite y vuelva a exportar.`
+          : `PDF antiguo cargado: ${imported.nombreCompleto || imported.rut}. Revise los datos y el link del QR antes de exportar.`,
+        source === 'embedded' ? 'success' : 'info'
+      );
+    } catch (error: any) {
+      console.error('Error leyendo PDF:', error);
+      triggerNotification(`No se pudo leer el PDF: ${error?.message || 'Error desconocido'}`, 'error');
+    } finally {
+      setIsImporting(false);
     }
   };
 
@@ -297,6 +331,22 @@ export default function App() {
 
         {/* Action Controls */}
         <div className="flex items-center gap-2.5">
+          <button
+            onClick={() => pdfInputRef.current?.click()}
+            disabled={isImporting}
+            className="flex items-center gap-1.5 px-3.5 py-1.5 bg-emerald-50 hover:bg-emerald-100/80 border border-emerald-200 rounded text-[11px] font-bold uppercase text-emerald-900 transition-all cursor-pointer shadow-2xs disabled:opacity-60 disabled:cursor-wait"
+          >
+            <FileUp className="w-3.5 h-3.5" />
+            {isImporting ? 'Leyendo PDF...' : 'Cargar PDF'}
+          </button>
+          <input
+            type="file"
+            ref={pdfInputRef}
+            onChange={handlePdfImport}
+            accept="application/pdf,.pdf"
+            className="hidden"
+          />
+
           <button
             onClick={loadDemo}
             className="flex items-center gap-1.5 px-3.5 py-1.5 bg-blue-50 hover:bg-blue-100/80 border border-blue-200 rounded text-[11px] font-bold uppercase text-blue-900 transition-all cursor-pointer shadow-2xs"

@@ -60,6 +60,10 @@ const C = {
   sl950:   '#020617',
 };
 
+// Texto en negro puro (#000): la Zebra ZC300 lo imprime con el panel K (resina negra),
+// nítido. Grises y azules se imprimen mezclando tinta YMC y se ven borrosos en letra chica.
+const INK = '#000000';
+
 const F = 'Helvetica'; // Built-in PDF font — no network request, zero-failure
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -98,7 +102,7 @@ const CheckboxPDF: React.FC<{ checked: boolean; sizePt?: number; color?: string 
       rx={2}
       ry={2}
       fill={checked ? color : 'white'}
-      stroke={checked ? color : C.sl400}
+      stroke={checked ? color : INK}
       strokeWidth={1.2}
     />
     {checked && (
@@ -162,11 +166,11 @@ const s = StyleSheet.create({
   },
   headerCenter: { flex: 1, alignItems: 'center', gap: 1 },
   headerTitle: {
-    fontFamily: F, fontWeight: 900, fontSize: 4.2, color: C.red,
+    fontFamily: F, fontWeight: 900, fontSize: 5, color: C.red,
     textTransform: 'uppercase', textAlign: 'center', lineHeight: 1.2,
   },
   headerSub: {
-    fontFamily: F, fontWeight: 900, fontSize: 5.5, color: C.navyDk,
+    fontFamily: F, fontWeight: 900, fontSize: 6, color: INK,
     textTransform: 'uppercase', textAlign: 'center', lineHeight: 1.2,
   },
 
@@ -196,13 +200,13 @@ const s = StyleSheet.create({
     alignItems: 'center', gap: 2.5,
   },
   areasTitle: {
-    fontFamily: F, fontWeight: 900, fontSize: 3, color: C.red,
+    fontFamily: F, fontWeight: 900, fontSize: 4, color: INK,
     textTransform: 'uppercase', textAlign: 'center',
   },
   areasRow: { flexDirection: 'row', justifyContent: 'space-around', width: '100%' },
   areaItem: { flexDirection: 'row', alignItems: 'center', gap: 2 },
   areaLabel: {
-    fontFamily: F, fontWeight: 900, fontSize: 3.5, color: C.redDk, textTransform: 'uppercase',
+    fontFamily: F, fontWeight: 900, fontSize: 4.6, color: INK, textTransform: 'uppercase',
   },
 
   // ── Data rows (right column personal info)
@@ -213,20 +217,20 @@ const s = StyleSheet.create({
     paddingBottom: 1.5, minHeight: 9,
   },
   dataLabel: {
-    fontFamily: F, fontWeight: 900, fontSize: 3.5, color: C.navy,
-    textTransform: 'uppercase', width: 26, flexShrink: 0,
+    fontFamily: F, fontWeight: 900, fontSize: 4.3, color: INK,
+    textTransform: 'uppercase', width: 31, flexShrink: 0,
   },
   dataValLg: {
-    flex: 1, fontFamily: F, fontWeight: 900, fontSize: 4.2,
-    color: C.sl950, textTransform: 'uppercase',
+    flex: 1, fontFamily: F, fontWeight: 900, fontSize: 5,
+    color: INK, textTransform: 'uppercase',
   },
-  dataValMono: { flex: 1, fontFamily: F, fontWeight: 900, fontSize: 4.2, color: C.sl950 },
+  dataValMono: { flex: 1, fontFamily: F, fontWeight: 900, fontSize: 5, color: INK },
   dataValMd: {
-    flex: 1, fontFamily: F, fontWeight: 700, fontSize: 4.2,
-    color: C.sl800, textTransform: 'uppercase',
+    flex: 1, fontFamily: F, fontWeight: 900, fontSize: 5,
+    color: INK, textTransform: 'uppercase',
   },
   dataEmpty: {
-    fontFamily: F, fontWeight: 400, fontSize: 3.8, color: C.sl300, fontStyle: 'italic',
+    fontFamily: F, fontWeight: 400, fontSize: 4, color: C.sl400, fontStyle: 'italic',
   },
 
   // ── Municipal licence badges
@@ -236,7 +240,7 @@ const s = StyleSheet.create({
     paddingTop: 2.5, paddingBottom: 3, paddingLeft: 2.5, paddingRight: 2.5,
   },
   licTitle: {
-    fontFamily: F, fontWeight: 900, fontSize: 3, color: C.navy,
+    fontFamily: F, fontWeight: 900, fontSize: 4, color: INK,
     textTransform: 'uppercase', marginBottom: 2.5,
   },
   licBadges: { flexDirection: 'row', gap: 2 },
@@ -244,7 +248,7 @@ const s = StyleSheet.create({
     flex: 1, height: 11, borderRadius: 1, borderWidth: 0.75,
     alignItems: 'center', justifyContent: 'center',
   },
-  licBadgeText: { fontFamily: F, fontWeight: 900, fontSize: 5 },
+  licBadgeText: { fontFamily: F, fontWeight: 900, fontSize: 5.5 },
 
   // ── Date boxes
   dateCols: { flexDirection: 'row', gap: 2 },
@@ -256,11 +260,11 @@ const s = StyleSheet.create({
   },
   dateBoxWarn: { borderColor: C.red, backgroundColor: C.white },
   dateLbl: {
-    fontFamily: F, fontWeight: 900, fontSize: 2.8, color: C.sl500,
-    textTransform: 'uppercase', textAlign: 'center', lineHeight: 1.3,
+    fontFamily: F, fontWeight: 900, fontSize: 3.8, color: INK,
+    textTransform: 'uppercase', textAlign: 'center', lineHeight: 1.2,
   },
-  dateLblWarn: { color: C.amber },
-  dateVal: { fontFamily: F, fontWeight: 900, fontSize: 4.8, color: C.sl900, textAlign: 'center' },
+  dateLblWarn: { color: INK },
+  dateVal: { fontFamily: F, fontWeight: 900, fontSize: 5.5, color: INK, textAlign: 'center' },
   dateValWarn: { color: C.amberDk },
 
   // ── Restrictions
@@ -271,11 +275,11 @@ const s = StyleSheet.create({
     flexDirection: 'row', alignItems: 'center', flexWrap: 'wrap', gap: 4,
   },
   restrictTitle: {
-    fontFamily: F, fontWeight: 900, fontSize: 3.5, color: C.sl600, textTransform: 'uppercase',
+    fontFamily: F, fontWeight: 900, fontSize: 4.3, color: INK, textTransform: 'uppercase',
   },
   restrictItem: { flexDirection: 'row', alignItems: 'center', gap: 2 },
   restrictLabel: {
-    fontFamily: F, fontWeight: 700, fontSize: 3.5, color: C.sl700, textTransform: 'uppercase',
+    fontFamily: F, fontWeight: 900, fontSize: 4.3, color: INK, textTransform: 'uppercase',
   },
 
   // ── Back card content wrapper
@@ -288,11 +292,11 @@ const s = StyleSheet.create({
   topSection: { flexDirection: 'row', gap: 4 },
   commitCol: { flex: 1, flexDirection: 'column', gap: 2 },
   commitTitle: {
-    fontFamily: F, fontWeight: 900, fontSize: 5, color: C.sl950,
+    fontFamily: F, fontWeight: 900, fontSize: 5.2, color: INK,
     textTransform: 'uppercase', lineHeight: 1.25,
   },
   commitBody: {
-    fontFamily: F, fontWeight: 400, fontSize: 4.6, color: C.sl800, lineHeight: 1.4,
+    fontFamily: F, fontWeight: 400, fontSize: 4.6, color: INK, lineHeight: 1.3,
   },
   qrCol: { flexShrink: 0, alignItems: 'center', gap: 2 },
   qrBox: {
@@ -301,7 +305,7 @@ const s = StyleSheet.create({
     paddingTop: 2.5, paddingBottom: 2.5, paddingLeft: 2.5, paddingRight: 2.5,
   },
   qrLabel: {
-    fontFamily: F, fontWeight: 900, fontSize: 2.8, color: C.sl500,
+    fontFamily: F, fontWeight: 900, fontSize: 3.6, color: INK,
     textTransform: 'uppercase', textAlign: 'center',
   },
 
@@ -312,13 +316,13 @@ const s = StyleSheet.create({
     paddingTop: 2.5, flexDirection: 'column',
   },
   eqTitle: {
-    fontFamily: F, fontWeight: 900, fontSize: 3.5, color: C.navy,
-    textTransform: 'uppercase', marginBottom: 2.5,
+    fontFamily: F, fontWeight: 900, fontSize: 4.3, color: INK,
+    textTransform: 'uppercase', marginBottom: 2,
   },
   eqGrid: { flex: 1, flexDirection: 'row' },
-  eqCol: { flex: 1, flexDirection: 'column', gap: 1.8, paddingRight: 2 },
-  eqItem: { flexDirection: 'row', alignItems: 'center', gap: 2.5 },
-  eqLabel: { fontFamily: F, fontSize: 3.2, textTransform: 'uppercase', lineHeight: 1 },
+  eqCol: { flex: 1, flexDirection: 'column', gap: 1.6, paddingRight: 1.5 },
+  eqItem: { flexDirection: 'row', alignItems: 'center', gap: 2 },
+  eqLabel: { fontFamily: F, fontSize: 4.1, color: INK, textTransform: 'uppercase', lineHeight: 1 },
 
   // ── OTROS row
   otrosRow: {
@@ -327,14 +331,14 @@ const s = StyleSheet.create({
     paddingTop: 2.5,
   },
   otrosLabel: {
-    fontFamily: F, fontWeight: 900, fontSize: 3.2, textTransform: 'uppercase',
+    fontFamily: F, fontWeight: 900, fontSize: 4.3, color: INK, textTransform: 'uppercase',
   },
   otrosValue: {
-    flex: 1, fontFamily: F, fontWeight: 900, fontSize: 3.2,
-    color: C.sl800, textTransform: 'uppercase',
+    flex: 1, fontFamily: F, fontWeight: 900, fontSize: 4.3,
+    color: INK, textTransform: 'uppercase',
   },
   otrosEmpty: {
-    flex: 1, fontFamily: F, fontWeight: 400, fontSize: 3.2, color: C.sl300, fontStyle: 'italic',
+    flex: 1, fontFamily: F, fontWeight: 400, fontSize: 4, color: INK, fontStyle: 'italic',
   },
 
   // ── Back footer
@@ -343,7 +347,7 @@ const s = StyleSheet.create({
     paddingTop: 2.5, alignItems: 'center',
   },
   footerText: {
-    fontFamily: F, fontWeight: 900, fontSize: 3, color: C.red,
+    fontFamily: F, fontWeight: 900, fontSize: 3.8, color: INK,
     textTransform: 'uppercase', textAlign: 'center',
   },
 
@@ -500,7 +504,7 @@ const CardFrontPDF: React.FC<{ data: LicenseData }> = ({ data }) => {
                       borderColor: on ? C.navy : C.sl300,
                       backgroundColor: on ? C.navy : C.white,
                     }]}>
-                      <Text style={[s.licBadgeText, { color: on ? C.white : C.sl300 }]}>{key}</Text>
+                      <Text style={[s.licBadgeText, { color: on ? C.white : INK, fontWeight: on ? 900 : 400 }]}>{key}</Text>
                     </View>
                   );
                 })}
@@ -539,7 +543,7 @@ const CardFrontPDF: React.FC<{ data: LicenseData }> = ({ data }) => {
                 <Text style={s.restrictLabel}>OTROS</Text>
                 {restricciones.otros && restricciones.otrosTexto ? (
                   <Text style={{
-                    fontFamily: F, fontWeight: 600, fontSize: 3.2, color: C.sl800,
+                    fontFamily: F, fontWeight: 900, fontSize: 4, color: INK,
                     textTransform: 'uppercase', borderLeftWidth: 0.5,
                     borderLeftColor: C.sl300, borderLeftStyle: 'solid', paddingLeft: 3,
                   }}>
@@ -577,7 +581,7 @@ const CardBackPDF: React.FC<{ data: LicenseData }> = ({ data }) => {
       <View key={eq.key} style={s.eqItem}>
         <CheckboxPDF checked={on} sizePt={3.8} color={C.navy} />
         <Text
-          style={[s.eqLabel, { fontWeight: on ? 900 : 400, color: on ? C.sl950 : C.sl500 }]}
+          style={[s.eqLabel, { fontWeight: on ? 900 : 400 }]}
           numberOfLines={1}
         >
           {eq.label.toUpperCase()}
@@ -620,9 +624,9 @@ const CardBackPDF: React.FC<{ data: LicenseData }> = ({ data }) => {
           <View style={s.qrCol}>
             <View style={s.qrBox}>
               {qrValue ? (
-                <QRCodePDF value={qrValue} sizePt={20 * MM} />
+                <QRCodePDF value={qrValue} sizePt={18 * MM} />
               ) : (
-                <View style={{ width: 20 * MM, height: 20 * MM }} />
+                <View style={{ width: 18 * MM, height: 18 * MM }} />
               )}
             </View>
             <Text style={s.qrLabel}>CENTRO DOCUMENTAL</Text>
@@ -644,7 +648,7 @@ const CardBackPDF: React.FC<{ data: LicenseData }> = ({ data }) => {
         {/* OTROS */}
         <View style={s.otrosRow}>
           <CheckboxPDF checked={equiposOtros} sizePt={3.8} color={C.navy} />
-          <Text style={[s.otrosLabel, { color: equiposOtros ? C.sl950 : C.sl500 }]}>OTROS:</Text>
+          <Text style={s.otrosLabel}>OTROS:</Text>
           {equiposOtros && equiposOtrosTexto
             ? <Text style={s.otrosValue} numberOfLines={1}>{equiposOtrosTexto.toUpperCase()}</Text>
             : <Text style={s.otrosEmpty}>No especificado</Text>}
